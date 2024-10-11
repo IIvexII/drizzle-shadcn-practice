@@ -34,7 +34,19 @@ export const userTable = pgTable("user", {
 
 ```tsx
 // src/drizzle/db.ts
-// specific for postgresql-js driver
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+// for query purposes
+const queryClient = postgres(process.env.DATABASE_URL as string);
+export const db = drizzle(queryClient);
+```
+
+```tsx
+// src/drizzle/migration.ts
 import { drizzle } from "drizzle-orm/postgres-js";
 import { migrate } from "drizzle-orm/postgres-js/migrator";
 import postgres from "postgres";
@@ -45,10 +57,6 @@ dotenv.config();
 // for migrations
 const migrationClient = postgres(process.env.DATABASE_URL as string, { max: 1 });
 migrate(drizzle(migrationClient), "./src/drizzle/migrations");
-
-// for query purposes
-const queryClient = postgres(process.env.DATABASE_URL as string);
-export const db = drizzle(queryClient);
 ```
 
 ```env
